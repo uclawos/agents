@@ -2,7 +2,7 @@
 
 > UCP v0.1 reference adapter for [hermes-agent](https://github.com/NousResearch/hermes-agent)
 > 中文社区版：[u-hermes](https://github.com/dongsheng123132/u-hermes)
-> Maintained by u-claw-os community  ·  License: MIT
+> Maintained by uclawos community  ·  License: MIT
 
 ## 角色定位
 

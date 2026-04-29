@@ -11,7 +11,7 @@ id = "claude-code"
 display = "Claude Code"
 homepage = "https://www.anthropic.com/claude-code"
 license = "Proprietary"
-maintainer = "u-claw-os community"
+maintainer = "uclawos community"
 ucp_version = "0.1"
 description = "Anthropic 官方 CLI/IDE Agent。Phase 5 接入：通过 stdio_mcp 协议派单。"
 

@@ -11,7 +11,7 @@ id = "hermes"
 display = "Hermes / U-Hermes"
 homepage = "https://github.com/NousResearch/hermes-agent"
 license = "MIT"
-maintainer = "u-claw-os community"
+maintainer = "uclawos community"
 ucp_version = "0.1"
 description = "NousResearch agentic AI; supports DeepSeek/Qwen/Kimi locally and bridges 20+ IM platforms."
 

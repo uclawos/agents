@@ -1,7 +1,7 @@
 # OpenClaw Adapter
 
 > UCP v0.1 reference adapter for [OpenClaw](https://openclaw.ai)
-> Maintained by u-claw-os community  ·  License: MIT
+> Maintained by uclawos community  ·  License: MIT
 
 ## 这是什么
 

@@ -1,7 +1,7 @@
 # Goose Adapter
 
 > UCP v0.1 reference adapter for [Goose](https://block.github.io/goose/) (`aaif-goose/goose`)
-> Maintained by u-claw-os community  ·  License: MIT (adapter) · Apache-2.0 (Goose)
+> Maintained by uclawos community  ·  License: MIT (adapter) · Apache-2.0 (Goose)
 
 ## 双重身份
 

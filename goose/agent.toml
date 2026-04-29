@@ -12,7 +12,7 @@ id = "goose"
 display = "Goose"
 homepage = "https://block.github.io/goose/"
 license = "Apache-2.0"
-maintainer = "u-claw-os community"
+maintainer = "uclawos community"
 ucp_version = "0.1"
 description = "Block's open-source AI agent. ACP-native. The reference Orchestrator for U-ClawOS."
 
@@ -37,7 +37,7 @@ bundle_url = "https://uclawos.org/bundles/goose-1.32-x86_64-pc-windows-msvc.zip"
 bundle_sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
 fallback_mirrors = [
   "https://github.com/aaif-goose/goose/releases/download/v1.32.0/goose-windows.zip",
-  "https://gitee.com/u-claw-os/goose-bundle"
+  "https://gitee.com/uclawos/goose-bundle"
 ]
 
 # ------------------------------------------------------------

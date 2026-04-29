@@ -10,7 +10,7 @@ id = "openclaw"
 display = "OpenClaw"
 homepage = "https://openclaw.ai"
 license = "MIT"
-maintainer = "u-claw-os community"
+maintainer = "uclawos community"
 ucp_version = "0.1"
 description = "Open-source agentic AI assistant. The first AI agent on U-Claw."
 
@@ -41,7 +41,7 @@ bundle_url = "https://uclawos.org/bundles/openclaw-2026.3.13.tar.gz"
 bundle_sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
 fallback_mirrors = [
   "https://npmmirror.com/sync/openclaw",
-  "https://gitee.com/u-claw-os/openclaw-bundle"
+  "https://gitee.com/uclawos/openclaw-bundle"
 ]
 
 # ------------------------------------------------------------

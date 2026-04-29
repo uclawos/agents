@@ -11,7 +11,7 @@ id = "codex"
 display = "Codex CLI"
 homepage = "https://github.com/openai/codex"
 license = "Apache-2.0"
-maintainer = "u-claw-os community"
+maintainer = "uclawos community"
 ucp_version = "0.1"
 description = "OpenAI 官方 CLI Agent。Phase 5 接入：通过 http_api 协议派单。"
 

@@ -11,7 +11,7 @@ id = "opencode"
 display = "OpenCode"
 homepage = "https://opencode.ai"
 license = "MIT"
-maintainer = "u-claw-os community"
+maintainer = "uclawos community"
 ucp_version = "0.1"
 description = "SST 团队的开源 Coding Agent (Bun + TypeScript)。Phase 5 接入：stdio_mcp 协议派单。"
 
