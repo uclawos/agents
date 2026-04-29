@@ -1,0 +1,132 @@
+# ============================================================
+# Hermes — Agent Manifest (UCP v0.1)
+# ============================================================
+# 把 NousResearch Hermes-Agent 接入 U-ClawOS 的 reference adapter。
+# 复用 v2/u-hermes-pro 的 pip 装机方式。
+# Hermes 在本平台扮演"IM 网关 + 推理型员工"。
+# ============================================================
+
+[meta]
+id = "hermes"
+display = "Hermes / U-Hermes"
+homepage = "https://github.com/NousResearch/hermes-agent"
+license = "MIT"
+maintainer = "u-claw-os community"
+ucp_version = "0.1"
+description = "NousResearch agentic AI; supports DeepSeek/Qwen/Kimi locally and bridges 20+ IM platforms."
+
+# ------------------------------------------------------------
+# 装机：pip / pipx，进虚拟环境
+# ------------------------------------------------------------
+[install]
+strategy = "pip"
+
+[install.windows]
+prerequisites = ["python>=3.10"]
+cmd = "powershell -ExecutionPolicy Bypass -File ./install.ps1"
+
+[install.windows.mirror]
+pip = "https://pypi.tuna.tsinghua.edu.cn/simple"
+
+[install.mac]
+prerequisites = ["python>=3.10"]
+cmd = "bash ./install.sh"
+
+[install.linux]
+prerequisites = ["python>=3.10"]
+cmd = "bash ./install.sh"
+
+[install.offline]
+bundle_url = "https://uclawos.org/bundles/hermes-agent-latest.tar.gz"
+bundle_sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+fallback_mirrors = [
+  "https://pypi.tuna.tsinghua.edu.cn/simple/hermes-agent",
+  "https://mirrors.aliyun.com/pypi/simple/hermes-agent"
+]
+
+# ------------------------------------------------------------
+# 运行时：hermes gateway 默认端口 8642
+# ------------------------------------------------------------
+[runtime]
+type = "http_mcp"
+endpoint = "http://127.0.0.1:8642"
+health_check = "http://127.0.0.1:8642/health"
+startup_cmd = "hermes gateway run --port 8642"
+shutdown_cmd = "hermes gateway stop"
+log_dir = "~/.uclaw/agents/hermes/logs"
+config_dir = "~/.uclaw/agents/hermes/config"
+
+# ------------------------------------------------------------
+# 能力：Hermes 是 IM 桥梁 + 推理型 Agent
+# ------------------------------------------------------------
+[capabilities]
+tags = ["reasoning", "im-bridge", "feishu", "wecom", "telegram", "code"]
+languages = ["zh", "en"]
+context_window = 128000
+streaming = true
+multimodal = false
+session_persistence = true
+
+# ------------------------------------------------------------
+# 隔离：Python 进程 / 虚拟环境
+# ------------------------------------------------------------
+[sandbox]
+isolation_level = "process"
+network_policy = "limited"
+allowed_domains = [
+  "api.u-claw.org",
+  "open.feishu.cn",
+  "qyapi.weixin.qq.com",
+  "api.telegram.org",
+  "pypi.tuna.tsinghua.edu.cn"
+]
+filesystem_policy = "scoped"
+working_dir = "~/.uclaw/agents/hermes/workspace"
+
+[sandbox.resource_limits]
+max_memory_mb = 1536
+max_cpu_percent = 40
+max_runtime_minutes = 60   # IM 网关需长跑，单任务可放宽
+
+# ------------------------------------------------------------
+# 卸载
+# ------------------------------------------------------------
+[uninstall]
+preserve_user_data = true
+cleanup_dirs = [
+  "~/.uclaw/agents/hermes/config",
+  "~/.uclaw/agents/hermes/logs",
+  "~/.uclaw/agents/hermes/venv"
+]
+cleanup_path = ["hermes"]
+
+[uninstall.windows]
+cmd = "powershell -ExecutionPolicy Bypass -File ./uninstall.ps1"
+
+[uninstall.mac]
+cmd = "bash ./uninstall.sh"
+
+[uninstall.linux]
+cmd = "bash ./uninstall.sh"
+
+# ------------------------------------------------------------
+# 健康检查
+# ------------------------------------------------------------
+[[health.checks]]
+name = "venv_python"
+type = "command"
+cmd = "hermes --version"
+timeout_ms = 5000
+
+[[health.checks]]
+name = "port_8642_listen"
+type = "tcp_port"
+port = 8642
+timeout_ms = 1000
+
+[[health.checks]]
+name = "gateway_health"
+type = "http_get"
+url = "http://127.0.0.1:8642/health"
+expected_status = 200
+timeout_ms = 5000

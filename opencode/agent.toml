@@ -1,0 +1,64 @@
+# ============================================================
+# OpenCode — Agent Manifest (UCP v0.1)
+# ============================================================
+# **占位 adapter**：Phase 5 才会真正接入。
+# OpenCode 是 SST 团队的开源 Coding Agent（cli + tui）。
+# Phase 5 评估通过后接入。
+# ============================================================
+
+[meta]
+id = "opencode"
+display = "OpenCode"
+homepage = "https://opencode.ai"
+license = "MIT"
+maintainer = "u-claw-os community"
+ucp_version = "0.1"
+description = "SST 团队的开源 Coding Agent (Bun + TypeScript)。Phase 5 接入：stdio_mcp 协议派单。"
+
+[install]
+strategy = "script"
+
+[install.windows]
+prerequisites = ["bun>=1.0"]
+cmd = "powershell -NoProfile -Command \"Write-Host '[opencode] 该 Agent 在 Phase 5 接入。当前 alpha 版仅放 manifest 占位。'; exit 1\""
+
+[install.mac]
+prerequisites = ["bun>=1.0"]
+cmd = "echo '[opencode] Phase 5 待接入'; exit 1"
+
+[install.linux]
+prerequisites = ["bun>=1.0"]
+cmd = "echo '[opencode] Phase 5 待接入'; exit 1"
+
+[runtime]
+type = "stdio_mcp"
+startup_cmd = "opencode --headless"
+log_dir = "~/.uclaw/agents/opencode/logs"
+config_dir = "~/.uclaw/agents/opencode/config"
+
+[capabilities]
+tags = ["code", "shell", "file-edit", "general"]
+languages = ["zh", "en"]
+context_window = 200000
+streaming = true
+multimodal = false
+session_persistence = false
+
+[sandbox]
+isolation_level = "process"
+network_policy = "limited"
+filesystem_policy = "scoped"
+working_dir = "~/.uclaw/agents/opencode/workspace"
+
+[uninstall]
+preserve_user_data = true
+cleanup_dirs = ["~/.uclaw/agents/opencode"]
+
+[uninstall.windows]
+cmd = "powershell -Command \"Write-Host '[opencode] 占位 adapter 无需卸载'; exit 0\""
+
+[uninstall.mac]
+cmd = "echo '[opencode] 占位 adapter 无需卸载'"
+
+[uninstall.linux]
+cmd = "echo '[opencode] 占位 adapter 无需卸载'"

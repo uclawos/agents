@@ -1,0 +1,126 @@
+# ============================================================
+# Goose — Agent Manifest (UCP v0.1)
+# ============================================================
+# Goose 是 U-ClawOS 的 reference Orchestrator (L2)。
+# 与其他 Agent 不同，Goose 同时是"超级员工"和"总经理"。
+# 虾盘管家把 Goose 当 sidecar 起来（已实现，见 src-tauri/src/sidecar.rs），
+# 这份 agent.toml 主要给"想用别的 Orchestrator 但仍想用 Goose 当 worker"的场景。
+# ============================================================
+
+[meta]
+id = "goose"
+display = "Goose"
+homepage = "https://block.github.io/goose/"
+license = "Apache-2.0"
+maintainer = "u-claw-os community"
+ucp_version = "0.1"
+description = "Block's open-source AI agent. ACP-native. The reference Orchestrator for U-ClawOS."
+
+# ------------------------------------------------------------
+# 装机：Goose 是单二进制，直接放 binaries/，无需 npm/pip
+# ------------------------------------------------------------
+[install]
+strategy = "binary"
+
+[install.windows]
+cmd = "powershell -ExecutionPolicy Bypass -File ./install.ps1"
+
+[install.mac]
+cmd = "bash ./install.sh"
+
+[install.linux]
+cmd = "bash ./install.sh"
+
+[install.offline]
+# Goose 单二进制 ZIP 66MB，解压 219MB
+bundle_url = "https://uclawos.org/bundles/goose-1.32-x86_64-pc-windows-msvc.zip"
+bundle_sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+fallback_mirrors = [
+  "https://github.com/aaif-goose/goose/releases/download/v1.32.0/goose-windows.zip",
+  "https://gitee.com/u-claw-os/goose-bundle"
+]
+
+# ------------------------------------------------------------
+# 运行时：ACP / WebSocket（虾盘管家直连 ws://127.0.0.1:<port>/acp）
+# ------------------------------------------------------------
+[runtime]
+type = "acp"
+endpoint = "ws://127.0.0.1:18789/acp"
+health_check = "http://127.0.0.1:18789/health"
+# startup 用 sandbox 内绝对路径（install.ps1 不动 PATH）
+# 注：~ 在 PowerShell -Command 模式下会被解析成 $HOME
+startup_cmd = "& \"$env:USERPROFILE\\.uclaw\\agents\\goose\\bin\\goose.exe\" serve --host 127.0.0.1 --port 18789"
+shutdown_cmd = "Get-Process goose -ErrorAction SilentlyContinue | Where-Object { $_.Path -like \"*\\.uclaw\\agents\\goose\\*\" } | Stop-Process -Force"
+log_dir = "~/.uclaw/agents/goose/logs"
+config_dir = "~/.uclaw/agents/goose/config"
+
+# ------------------------------------------------------------
+# 能力：Goose 是通用框架，能力靠 MCP servers 扩展
+# ------------------------------------------------------------
+[capabilities]
+tags = ["orchestrator", "code", "shell", "general"]
+languages = ["zh", "en"]
+context_window = 200000
+streaming = true
+multimodal = false
+session_persistence = true
+
+# ------------------------------------------------------------
+# 隔离：Goose 作为 Orchestrator，权限略宽（"信任内部"）
+# ------------------------------------------------------------
+[sandbox]
+isolation_level = "process"
+network_policy = "limited"
+allowed_domains = [
+  "api.u-claw.org",
+  "127.0.0.1"   # 让 Goose 能调本地其他 Agent
+]
+filesystem_policy = "scoped"
+working_dir = "~/.uclaw/agents/goose/workspace"
+
+[sandbox.resource_limits]
+max_memory_mb = 1024
+max_cpu_percent = 30
+max_runtime_minutes = 120  # Orchestrator 长跑
+
+# ------------------------------------------------------------
+# 卸载
+# ------------------------------------------------------------
+[uninstall]
+preserve_user_data = true
+cleanup_dirs = [
+  "~/.uclaw/agents/goose/config",
+  "~/.uclaw/agents/goose/logs"
+]
+cleanup_path = ["goose"]
+
+[uninstall.windows]
+cmd = "powershell -ExecutionPolicy Bypass -File ./uninstall.ps1"
+
+[uninstall.mac]
+cmd = "bash ./uninstall.sh"
+
+[uninstall.linux]
+cmd = "bash ./uninstall.sh"
+
+# ------------------------------------------------------------
+# 健康检查
+# ------------------------------------------------------------
+[[health.checks]]
+name = "version"
+type = "command"
+cmd = "goose --version"
+timeout_ms = 3000
+
+[[health.checks]]
+name = "acp_listening"
+type = "tcp_port"
+port = 18789
+timeout_ms = 1000
+
+[[health.checks]]
+name = "health_endpoint"
+type = "http_get"
+url = "http://127.0.0.1:18789/health"
+expected_status = 200
+timeout_ms = 5000

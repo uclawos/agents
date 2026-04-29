@@ -1,0 +1,69 @@
+# ============================================================
+# Codex CLI — Agent Manifest (UCP v0.1)
+# ============================================================
+# **占位 adapter**：Phase 5 才会真正接入。
+# OpenAI 官方代理 CLI，定位类似 Claude Code，但走 OpenAI API。
+# 让其他人通过虾盘云接（中转 OpenAI）的可行性 Phase 5 评估。
+# ============================================================
+
+[meta]
+id = "codex"
+display = "Codex CLI"
+homepage = "https://github.com/openai/codex"
+license = "Apache-2.0"
+maintainer = "u-claw-os community"
+ucp_version = "0.1"
+description = "OpenAI 官方 CLI Agent。Phase 5 接入：通过 http_api 协议派单。"
+
+[install]
+strategy = "npm"
+
+[install.windows]
+prerequisites = ["node>=18"]
+cmd = "powershell -NoProfile -Command \"Write-Host '[codex] 该 Agent 在 Phase 5 接入。当前 alpha 版仅放 manifest 占位。'; exit 1\""
+
+[install.windows.mirror]
+npm = "https://registry.npmmirror.com"
+
+[install.mac]
+prerequisites = ["node>=18"]
+cmd = "echo '[codex] Phase 5 待接入'; exit 1"
+
+[install.linux]
+prerequisites = ["node>=18"]
+cmd = "echo '[codex] Phase 5 待接入'; exit 1"
+
+[runtime]
+type = "http_api"
+endpoint = "http://127.0.0.1:13700"
+health_check = "http://127.0.0.1:13700/health"
+startup_cmd = "codex serve --port 13700"
+log_dir = "~/.uclaw/agents/codex/logs"
+config_dir = "~/.uclaw/agents/codex/config"
+
+[capabilities]
+tags = ["code", "shell", "general"]
+languages = ["zh", "en"]
+context_window = 128000
+streaming = true
+multimodal = false
+session_persistence = false
+
+[sandbox]
+isolation_level = "process"
+network_policy = "limited"
+filesystem_policy = "scoped"
+working_dir = "~/.uclaw/agents/codex/workspace"
+
+[uninstall]
+preserve_user_data = true
+cleanup_dirs = ["~/.uclaw/agents/codex"]
+
+[uninstall.windows]
+cmd = "powershell -Command \"Write-Host '[codex] 占位 adapter 无需卸载'; exit 0\""
+
+[uninstall.mac]
+cmd = "echo '[codex] 占位 adapter 无需卸载'"
+
+[uninstall.linux]
+cmd = "echo '[codex] 占位 adapter 无需卸载'"

@@ -1,0 +1,129 @@
+# ============================================================
+# OpenClaw — Agent Manifest (UCP v0.1)
+# ============================================================
+# 这是把 OpenClaw 接入 U-ClawOS 的 reference adapter。
+# 复用 dongsheng123132/u-claw 仓库的 install/install.ps1 装机逻辑。
+# ============================================================
+
+[meta]
+id = "openclaw"
+display = "OpenClaw"
+homepage = "https://openclaw.ai"
+license = "MIT"
+maintainer = "u-claw-os community"
+ucp_version = "0.1"
+description = "Open-source agentic AI assistant. The first AI agent on U-Claw."
+
+# ------------------------------------------------------------
+# 装机：复用 u-claw 仓库的 install.ps1 (Windows) / install.sh (Mac/Linux)
+# ------------------------------------------------------------
+[install]
+strategy = "script"
+
+[install.windows]
+prerequisites = ["node>=20"]
+cmd = "powershell -ExecutionPolicy Bypass -File ./install.ps1"
+
+[install.windows.mirror]
+npm = "https://registry.npmmirror.com"
+
+[install.mac]
+prerequisites = ["node>=20"]
+cmd = "bash ./install.sh"
+
+[install.linux]
+prerequisites = ["node>=20"]
+cmd = "bash ./install.sh"
+
+[install.offline]
+# Phase 4 启用，先占位
+bundle_url = "https://uclawos.org/bundles/openclaw-2026.3.13.tar.gz"
+bundle_sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+fallback_mirrors = [
+  "https://npmmirror.com/sync/openclaw",
+  "https://gitee.com/u-claw-os/openclaw-bundle"
+]
+
+# ------------------------------------------------------------
+# 运行时：OpenClaw 起后端口 18789，admin API 18788
+# ------------------------------------------------------------
+[runtime]
+type = "http_mcp"
+endpoint = "http://127.0.0.1:18788/mcp"
+health_check = "http://127.0.0.1:18789/health"
+startup_cmd = "openclaw gateway run --port 18789 --allow-unconfigured"
+shutdown_cmd = "openclaw gateway stop"
+log_dir = "~/.uclaw/data/.openclaw/logs"
+config_dir = "~/.uclaw/data/.openclaw"
+
+# ------------------------------------------------------------
+# 能力：OpenClaw 偏全能型，shell + browser + file edit 都行
+# ------------------------------------------------------------
+[capabilities]
+tags = ["code", "shell", "browser", "file-edit", "web-research", "general"]
+languages = ["zh", "en"]
+context_window = 200000
+streaming = true
+multimodal = false
+session_persistence = true
+
+# ------------------------------------------------------------
+# 隔离：默认 process 级，限制内存 2GB / 单任务 30 分钟
+# ------------------------------------------------------------
+[sandbox]
+isolation_level = "process"
+network_policy = "limited"
+allowed_domains = [
+  "api.u-claw.org",
+  "registry.npmjs.org",
+  "registry.npmmirror.com"
+]
+filesystem_policy = "scoped"
+working_dir = "~/.uclaw/agents/openclaw/workspace"
+
+[sandbox.resource_limits]
+max_memory_mb = 2048
+max_cpu_percent = 50
+max_runtime_minutes = 30
+
+# ------------------------------------------------------------
+# 卸载
+# ------------------------------------------------------------
+[uninstall]
+preserve_user_data = true
+cleanup_dirs = [
+  "~/.uclaw/data/.openclaw",
+  "~/.uclaw/agents/openclaw/workspace"
+]
+cleanup_path = ["openclaw"]
+
+[uninstall.windows]
+cmd = "powershell -ExecutionPolicy Bypass -File ./uninstall.ps1"
+
+[uninstall.mac]
+cmd = "bash ./uninstall.sh"
+
+[uninstall.linux]
+cmd = "bash ./uninstall.sh"
+
+# ------------------------------------------------------------
+# 健康检查：版本 + 端口 + 网关 health endpoint
+# ------------------------------------------------------------
+[[health.checks]]
+name = "version"
+type = "command"
+cmd = "openclaw --version"
+timeout_ms = 3000
+
+[[health.checks]]
+name = "port_18789_listen"
+type = "tcp_port"
+port = 18789
+timeout_ms = 1000
+
+[[health.checks]]
+name = "gateway_health"
+type = "http_get"
+url = "http://127.0.0.1:18789/health"
+expected_status = 200
+timeout_ms = 5000

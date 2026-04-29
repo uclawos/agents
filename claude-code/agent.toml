@@ -1,0 +1,73 @@
+# ============================================================
+# Claude Code — Agent Manifest (UCP v0.1)
+# ============================================================
+# **占位 adapter**：Phase 5 才会真正接入。
+# 当前 manifest 让工具市场能列出来，让用户对未来路线有预期。
+# 装机命令故意走 fail-fast 脚本，提示"待 Phase 5"。
+# ============================================================
+
+[meta]
+id = "claude-code"
+display = "Claude Code"
+homepage = "https://www.anthropic.com/claude-code"
+license = "Proprietary"
+maintainer = "u-claw-os community"
+ucp_version = "0.1"
+description = "Anthropic 官方 CLI/IDE Agent。Phase 5 接入：通过 stdio_mcp 协议派单。"
+
+# ------------------------------------------------------------
+# 装机：Phase 5 实施。当前直接 fail 提示用户。
+# ------------------------------------------------------------
+[install]
+strategy = "script"
+
+[install.windows]
+prerequisites = ["node>=18"]
+cmd = "powershell -NoProfile -Command \"Write-Host '[claude-code] 该 Agent 在 Phase 5 接入。当前 alpha 版仅放 manifest 占位。请关注 0.2.0 公测。'; exit 1\""
+
+[install.mac]
+prerequisites = ["node>=18"]
+cmd = "echo '[claude-code] Phase 5 待接入'; exit 1"
+
+[install.linux]
+prerequisites = ["node>=18"]
+cmd = "echo '[claude-code] Phase 5 待接入'; exit 1"
+
+# ------------------------------------------------------------
+# 运行时（Phase 5 实施）
+# ------------------------------------------------------------
+[runtime]
+type = "stdio_mcp"
+startup_cmd = "claude"
+log_dir = "~/.uclaw/agents/claude-code/logs"
+config_dir = "~/.uclaw/agents/claude-code/config"
+
+# ------------------------------------------------------------
+# 能力声明（先填，方便 Phase 5 派单逻辑提前测）
+# ------------------------------------------------------------
+[capabilities]
+tags = ["code", "shell", "file-edit", "general"]
+languages = ["zh", "en"]
+context_window = 200000
+streaming = true
+multimodal = true
+session_persistence = false
+
+[sandbox]
+isolation_level = "process"
+network_policy = "limited"
+filesystem_policy = "scoped"
+working_dir = "~/.uclaw/agents/claude-code/workspace"
+
+[uninstall]
+preserve_user_data = true
+cleanup_dirs = ["~/.uclaw/agents/claude-code"]
+
+[uninstall.windows]
+cmd = "powershell -Command \"Write-Host '[claude-code] 占位 adapter 无需卸载'; exit 0\""
+
+[uninstall.mac]
+cmd = "echo '[claude-code] 占位 adapter 无需卸载'"
+
+[uninstall.linux]
+cmd = "echo '[claude-code] 占位 adapter 无需卸载'"
